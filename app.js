@@ -48,6 +48,7 @@ async function waitForFile(filePath, pollingInterval = 1000, timeout = 600000) {
 			resolve(true);
 		  } else {
 			logger.info('File size:', currentSize);
+			console.log('File size', currentSize); 
 			previousSize = currentSize;
   
 			// Check for timeout
@@ -70,6 +71,7 @@ async function waitForFile(filePath, pollingInterval = 1000, timeout = 600000) {
 
 // Serve the contents in the 'public' directory to the internet
 app.use(express.static(__dirname + '/public')); 
+
 app.use(compression())
 // CORS options to allow GET and POST requests from youtube.com domain
 const corsOptions = {
@@ -77,6 +79,7 @@ const corsOptions = {
 	methods: ['GET', 'POST'],
 	allowedHeaders: ['Content-Length','Accept-Ranges','Origin', 'Content-Type', 'Content-Disposition'],
 };
+
 // Use the CORS options for all routes
 app.use(cors(corsOptions));
 
@@ -88,7 +91,7 @@ app.options('/download/mp4/:filename', cors(corsOptions));
 const mp4FilesDirectory = path.join(__dirname, '/public'); 
 
 // Listen for POST request
-app.post('/url',async(req,res) => {
+app.post('/url', cors(corsOptions), async(req,res) => {
 	try {
         // Grab request body
 		const data = req.body;
