@@ -44,13 +44,14 @@ async function waitForFile(filePath, pollingInterval = 1000, timeout = 600000) {
 		  if (currentSize === previousSize && currentSize > 0) {
 			// File size hasn't changed, and it's not an empty file, assuming download is complete
 			logger.info('File download complete!');
+			console.log('File download complete!'); 
 			clearInterval(intervalId);
 			resolve(true);
 		  } else {
-			logger.info('File size:', currentSize);
-			console.log('File size', currentSize); 
+			logger.info(`File size for ${filePath}`, currentSize);
+			console.log(`File size for ${filePath}`, currentSize); 
 			previousSize = currentSize;
-  
+			
 			// Check for timeout
 			elapsedTime += pollingInterval;
 			if (elapsedTime >= timeout) {
@@ -67,7 +68,7 @@ async function waitForFile(filePath, pollingInterval = 1000, timeout = 600000) {
 		}
 	  }, pollingInterval);
 	});
-  }
+}
 
 // Serve the contents in the 'public' directory to the internet
 app.use(express.static(__dirname + '/public')); 
@@ -139,6 +140,7 @@ app.get('/download/mp4/:filename', cors(corsOptions), (req,res) => {
 				if(deleteErr) {
 					console.error(`Error deleting file ${deleteErr}`);
 				} else {
+					console.log(`File ${filename} has been deleted`); 
 					logger.info(`File ${filename} has been deleted`); 
 				}
 			});
