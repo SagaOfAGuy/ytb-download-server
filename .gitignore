@@ -1,3 +1,4 @@
 node_modules
 .elasticbeanstalk
-
+combined.log
+error.log
