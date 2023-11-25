@@ -1,28 +1,5 @@
-import crypto from 'crypto'
-// Functions for file handling and logging
-
-//Using the printf format.
-export const customFormat = printf(({ level, message, label, timestamp }) => {
-    return `${timestamp} [${label}] ${level}: ${message}`;
-});
-  
-// Logging mechanism
-export const logger = createLogger({
-      level: 'info',
-      format: combine(label({ label: CATEGORY }), timestamp(), customFormat),
-      defaultMeta: { service: 'user-service' },
-      transports: [
-        //
-        // - Write all logs with importance level of `error` or less to `error.log`
-        // - Write all logs with importance level of `info` or less to `combined.log`
-        //
-        new transports.File({ filename: 'error.log', level: 'error' }),
-        new transports.File({ filename: 'combined.log' , level: 'debug'}),
-      ],
-});
-  
 // Fundtion to wait until video file has finished downloading. Give it an hour timeout and check every second. 
-export async function waitForFile(filePath, pollingInterval = 1000, timeout = 600000) {
+async function waitForFile(filePath, pollingInterval = 1000, timeout = 600000) {
       let elapsedTime = 0;
       let previousSize = -1;
       return new Promise((resolve, reject) => {
@@ -61,6 +38,24 @@ export async function waitForFile(filePath, pollingInterval = 1000, timeout = 60
 }
 
 // Function to generate random file name
-export function randomFileName() {
+function randomFileName() {
   return crypto.randomBytes(32).toString('hex');
+}
+
+// Function to read file buffer
+async function readFileToBuffer(filePath) {
+  try {
+    const buffer = await fs.readFile(filePath);
+    return buffer;
+  } catch (err) {
+    throw err;
+  }
+}
+
+
+
+module.exports ={
+  waitForFile,
+  randomFileName,
+  readFileToBuffer
 }

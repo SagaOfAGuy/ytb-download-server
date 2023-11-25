@@ -10,9 +10,28 @@ const bodyParser = require('body-parser');
 const cors = require('cors'); 
 const path = require('path');
 const compression = require('compression'); 
-import { waitForFile, logger,  customFormat} from './utils';
+const { waitForFile } = require('./utils.js'); 
+const { s3client, getSecret } = require('./s3.js'); 
 
-
+const customFormat = printf(({ level, message, label, timestamp }) => {
+    return `${timestamp} [${label}] ${level}: ${message}`;
+});
+  
+// Logging mechanism
+const logger = createLogger({
+      level: 'info',
+      format: combine(label({ label: CATEGORY }), timestamp(), customFormat),
+      defaultMeta: { service: 'user-service' },
+      transports: [
+        //
+        // - Write all logs with importance level of `error` or less to `error.log`
+        // - Write all logs with importance level of `info` or less to `combined.log`
+        //
+        new transports.File({ filename: 'error.log', level: 'error' }),
+        new transports.File({ filename: 'combined.log' , level: 'debug'}),
+      ],
+});
+  
 // Serve the contents in the 'public' directory to the internet
 app.use(express.static(__dirname + '/public')); 
 
