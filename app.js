@@ -5,12 +5,13 @@ import cors from 'cors';
 import { join } from 'path';
 import compression from 'compression'; 
 import { waitForFile, readFileToBuffer } from './utils.js'; 
-import { getSecret } from './s3.js'; 
 import { PutObjectCommand, S3Client, DeleteObjectCommand } from '@aws-sdk/client-s3';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { getSignedUrl } from '@aws-sdk/cloudfront-signer'; 
 import * as fs from 'fs'; 
+import { SecretsManagerClient, GetSecretValueCommand } from '@aws-sdk/client-secrets-manager';
+
 
 // Create the filepath variables
 const __filename = fileURLToPath(import.meta.url);
@@ -64,6 +65,24 @@ var s3 = new S3Client({
 		secretAccessKey: secret
 	}
 });
+
+
+// Function to grab the secret name from AWS credentials manager
+async function getSecret(secretName, region) {
+    const client = new SecretsManagerClient({ region });
+    try {
+      const response = await client.send(
+        new GetSecretValueCommand({
+          SecretId: secretName,
+          VersionStage: "AWSCURRENT",
+        })
+      );
+      return response.SecretString;
+    } catch (error) {
+      console.error("Error retrieving secret:", error);
+      throw error;
+    }
+}
 
 
 // Listen for POST request
