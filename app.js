@@ -43,28 +43,8 @@ app.use(json());
 //app.options('/download/mp4/:filename', cors(corsOptions)); 
 
 
-// Directory where MP4 while be downloaded to
-const mp4FilesDirectory = join(__dirname, '/public'); 
 
 
-// Grab the Amazon secrets values we need to set in Amazon secrets manager
-var access = JSON.parse(await getSecret('ytb-access-key','us-east-1'))['access']; 
-var secret = JSON.parse(await getSecret('ytb-secret','us-east-1'))['secret'];
-var bucket = JSON.parse(await getSecret('ytb-bucket', 'us-east-1'))['bucket']; 
-var keyPairId = JSON.parse(await getSecret('ytb-download-keypair-id','us-east-1'))['keyid']; 
-var cloudfrontDomain = JSON.parse(await getSecret('cloudfront-domain','us-east-1'))['domain'];
-var region = 'us-east-1'
-var privateKey = await getSecret('ytb-download-priv-key','us-east-1'); 
-
-
-// Define s3 client with credentials
-var s3 = new S3Client({
-	region: region,
-	credentials: {
-		accessKeyId: access,
-		secretAccessKey: secret
-	}
-});
 
 
 // Function to grab the secret name from AWS credentials manager
@@ -84,6 +64,24 @@ async function getSecret(secretName, region) {
     }
 }
 
+// Grab the Amazon secrets values we need to set in Amazon secrets manager
+var access = JSON.parse(await getSecret('ytb-access-key','us-east-1'))['access']; 
+var secret = JSON.parse(await getSecret('ytb-secret','us-east-1'))['secret'];
+var bucket = JSON.parse(await getSecret('ytb-bucket', 'us-east-1'))['bucket']; 
+var keyPairId = JSON.parse(await getSecret('ytb-download-keypair-id','us-east-1'))['keyid']; 
+var cloudfrontDomain = JSON.parse(await getSecret('cloudfront-domain','us-east-1'))['domain'];
+var region = 'us-east-1'
+var privateKey = await getSecret('ytb-download-priv-key','us-east-1'); 
+
+
+// Define s3 client with credentials
+var s3 = new S3Client({
+	region: region,
+	credentials: {
+		accessKeyId: access,
+		secretAccessKey: secret
+	}
+});
 
 // Listen for POST request
 app.post('/url', cors(corsOptions), async(req,res) => {
