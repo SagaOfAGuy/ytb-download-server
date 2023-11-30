@@ -152,7 +152,7 @@ app.post('/url', cors(corsOptions), async(req,res) => {
 				privateKey: privateKey,
 				keyPairId: keyPairId
 			})
-			
+			 
 			
 			// If the video has been uploaded to S3 properly
 			if(cloudFrontUrl.includes("https://")) {
