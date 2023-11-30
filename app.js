@@ -28,8 +28,8 @@ app.use(compression())
 
 // CORS options to allow GET and POST requests from youtube.com domain
 const corsOptions = {
-	origin: 'https://www.youtube.com',
-	methods: ['GET', 'POST'],
+	origin: '*',
+	methods: ['GET', 'POST', 'OPTIONS'],
 	allowedHeaders: ['Content-Length','Accept-Ranges','Origin', 'Content-Type', 'Content-Disposition'],
 };
 
