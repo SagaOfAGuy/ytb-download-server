@@ -23,5 +23,5 @@ node app.js
 
 ![Alt text](image-2.png)
 
-## Deploying this app to AWS with Terraform
-Coming soon...
+## Deploying with AWS App Runner
+Coming soon... 
